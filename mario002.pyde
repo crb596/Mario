@@ -34,7 +34,7 @@ class Creature:
 class Mario(Creature):
     def __init__(self, x, y, r, g):
         Creature.__init__(self,x, y, r, g)
-        self.keyHandler={LEFT:False, RIGHT:False}
+        self.keyHandler={LEFT:False, RIGHT:False, UP:False}
         
     def update(self):
         self.gravity()
@@ -45,6 +45,9 @@ class Mario(Creature):
             self.vx = 5
         else:
             self.vx = 0
+            
+        if self.keyHandler[UP] and self.y + self.r == self.g:
+            self.vy = -15
             
         self.x += self.vx
         self.y += self.vy
@@ -79,9 +82,13 @@ def keyPressed():
         g.mario.keyHandler[LEFT] = True
     elif keyCode == RIGHT:
         g.mario.keyHandler[RIGHT] = True
-
+    elif keyCode == UP:
+        g.mario.keyHandler[UP] = True
+        
 def keyReleased():
     if keyCode == LEFT:
         g.mario.keyHandler[LEFT] = False
     elif keyCode == RIGHT:
         g.mario.keyHandler[RIGHT] = False
+    elif keyCode == UP:
+        g.mario.keyHandler[UP] = False
