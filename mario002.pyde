@@ -69,6 +69,9 @@ class Mario(Creature):
         if self.keyHandler[UP] and self.y + self.r == self.g:
             self.vy = -15
             
+        if self.x - self.r < 0:
+            self.x = self.r 
+        
         self.x += self.vx
         self.y += self.vy
 
