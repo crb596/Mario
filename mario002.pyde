@@ -31,14 +31,30 @@ class Creature:
         strokeWeight(5)
         line(self.x-self.r, self.g, self.x+self.r, self.g)
     
-    
+class Mario(Creature):
+    def __init__(self, x, y, r, g):
+        Creature.__init__(self,x, y, r, g)
+        self.keyHandler={LEFT:False, RIGHT:False}
+        
+    def update(self):
+        self.gravity()
+        
+        if self.keyHandler[LEFT]:
+            self.vx = -5
+        elif self.keyHandler[RIGHT]:
+            self.vx = 5
+        else:
+            self.vx = 0
+            
+        self.x += self.vx
+        self.y += self.vy
 
 class Game:
     def __init__(self, w, h, g):
         self.w = w
         self.h = h
         self.g = g
-        self.mario = Creature(50,50, 35, self.g)
+        self.mario = Mario(50,50, 35, self.g)
     
     def display(self):
         fill(0,140,0)
@@ -57,3 +73,15 @@ def setup():
 def draw():
     background(255)
     g.display()
+
+def keyPressed():
+    if keyCode == LEFT:
+        g.mario.keyHandler[LEFT] = True
+    elif keyCode == RIGHT:
+        g.mario.keyHandler[RIGHT] = True
+
+def keyReleased():
+    if keyCode == LEFT:
+        g.mario.keyHandler[LEFT] = False
+    elif keyCode == RIGHT:
+        g.mario.keyHandler[RIGHT] = False
