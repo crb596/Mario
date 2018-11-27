@@ -23,6 +23,12 @@ class Creature:
             self.vy += 0.4
             if self.y + self.r + self.vy > self.g:
                  self.vy = self.g - (self.y+self.r)
+        
+        for p in g.platforms:
+            if self.y + self.r <= p.y and self.x+self.r >= p.x and self.x-self.r <= p.x+p.w:
+                self.g = p.y
+                break
+            self.g = g.g
     
     def update(self):
         self.gravity()
@@ -75,20 +81,43 @@ class Mario(Creature):
         self.x += self.vx
         self.y += self.vy
 
+class Platform:
+    def __init__(self,x,y, w, h, img):
+        self.x = x
+        self.y = y
+        self.w = w
+        self.h = h
+        self.img = loadImage(path+"images/"+img)
+    
+    def display(self):
+        # fill(130, 95, 1)
+        # rect(self.x, self.y, self.w, self.h)
+        image(self.img, self.x, self.y, self.w, self.h)
+        
 class Game:
     def __init__(self, w, h, g):
         self.w = w
         self.h = h
         self.g = g
         self.mario = Mario(50,50, 35, self.g, "mario.png", 100, 70, 11)
+        
+        self.platforms = []
+        for i in range(3):
+            self.platforms.append(Platform(250+i*300, 500-i*150, 192, 50, "platform.png"))
     
     def display(self):
         fill(0,140,0)
         stroke(140)
         strokeWeight(1)
         rect(0, self.g, self.w, self.h)
-        self.mario.display()
         
+        for p in self.platforms:
+            p.display()
+        
+        
+        self.mario.display()
+
+    
 
 g = Game(1024,768,600)
 
