@@ -1,4 +1,4 @@
-import os
+import os, random
 path = os.getcwd() + "/"
 
 class Creature:
@@ -81,6 +81,27 @@ class Mario(Creature):
         self.x += self.vx
         self.y += self.vy
 
+class Gomba(Creature):
+    def __init__(self, x, y, r, g, img, w, h, F, xL, xR):
+        Creature.__init__(self,x, y, r, g, img, w, h, F)
+        self.xL = xL
+        self.xR = xR
+        self.vx = random.randint(1,5)
+        
+    def update(self):
+        self.gravity()
+    
+        if self.x > self.xR:
+            self.vx *= -1
+            self.direction = -1
+        elif self.x < self.xL:
+            self.vx *= -1
+            self.direction = 1
+        
+        self.x += self.vx
+        self.y += self.vy
+        
+
 class Platform:
     def __init__(self,x,y, w, h, img):
         self.x = x
@@ -101,6 +122,10 @@ class Game:
         self.g = g
         self.mario = Mario(50,50, 35, self.g, "mario.png", 100, 70, 11)
         
+        self.enemies = []
+        for i in range(5):
+            self.enemies.append(Gomba(random.randint(200, 500), 0, 35, self.g, "gomba.png", 70, 70, 5, 200, 800))
+        
         self.platforms = []
         for i in range(3):
             self.platforms.append(Platform(250+i*300, 500-i*150, 192, 50, "platform.png"))
@@ -114,7 +139,9 @@ class Game:
         for p in self.platforms:
             p.display()
         
-        
+        for e in self.enemies:
+            e.display()
+            
         self.mario.display()
 
     
