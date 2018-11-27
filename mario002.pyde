@@ -147,8 +147,22 @@ class Game:
         # strokeWeight(1)
         # rect(0, self.g, self.w, self.h)
         
+        
+        cnt = 0
+        x = 0
         for b in self.bgImgs:
-            image(b,0 - self.x,0)
+            if cnt == 1:
+                x = self.x//4
+            if cnt == 2:
+                x = self.x//3
+            if cnt == 3:
+                x = self.x//2
+            if cnt == 4 and cnt == 5:
+                x = self.x
+            cnt += 1
+            
+            image(b,0,0, self.w - x%self.w, self.h, x%self.w, 0, self.w, self.h)
+            image(b,self.w -x%self.w, 0, x%self.w, self.h, 0, 0, x%self.w, self.h  )
         
         for p in self.platforms:
             p.display()
@@ -159,7 +173,7 @@ class Game:
         self.mario.display()
     
 
-g = Game(1024,720,585)
+g = Game(1280,720,585)
 
 def setup():
     size(g.w, g.h)
