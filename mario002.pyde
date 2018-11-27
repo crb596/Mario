@@ -1,5 +1,7 @@
+add_library('minim')
 import os, random
 path = os.getcwd() + "/"
+player = Minim(this)
 
 class Creature:
     def __init__(self, x, y, r, g, img, w, h, F):
@@ -58,6 +60,7 @@ class Mario(Creature):
     def __init__(self, x, y, r, g, img, w, h, F):
         Creature.__init__(self,x, y, r, g, img, w, h, F)
         self.keyHandler={LEFT:False, RIGHT:False, UP:False}
+        self.jumpSound = player.loadFile(path + "sounds/jump.mp3")
         
     def update(self):
         self.gravity()
@@ -73,6 +76,8 @@ class Mario(Creature):
             # self.direction = 0
             
         if self.keyHandler[UP] and self.y + self.r == self.g:
+            self.jumpSound.rewind()
+            self.jumpSound.play()
             self.vy = -15
             
         if self.x - self.r < 0:
@@ -124,6 +129,11 @@ class Game:
         self.w = w
         self.h = h
         self.g = g
+        self.pause = False
+        self.pauseSound = player.loadFile(path + "sounds/pause.mp3")
+        self.bgSound = player.loadFile(path + "sounds/background.mp3")
+        self.bgSound.play()
+        self.bgSound.loop()
         self.mario = Mario(50,50, 35, self.g, "mario.png", 100, 70, 11)
         
         self.bgImgs = []
@@ -146,7 +156,6 @@ class Game:
         # stroke(140)
         # strokeWeight(1)
         # rect(0, self.g, self.w, self.h)
-        
         
         cnt = 0
         x = 0
@@ -180,8 +189,9 @@ def setup():
     background(255)
     
 def draw():
-    background(255)
-    g.display()
+    if not g.pause:
+        background(255)
+        g.display()
 
 def keyPressed():
     if keyCode == LEFT:
@@ -190,6 +200,13 @@ def keyPressed():
         g.mario.keyHandler[RIGHT] = True
     elif keyCode == UP:
         g.mario.keyHandler[UP] = True
+    elif keyCode == 80:
+        if g.pause:
+            g.pause = False
+        else:
+            g.pause = True
+        g.pauseSound.rewind()
+        g.pauseSound.play()
         
 def keyReleased():
     if keyCode == LEFT:
