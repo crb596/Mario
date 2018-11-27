@@ -44,6 +44,9 @@ class Creature:
             image(self.img,self.x-self.w//2, self.y -self.h//2, self.w, self.h, int(self.f) * self.w, 0, (int(self.f) +1)* self.w, self.h )
         elif self.direction == -1:
             image(self.img,self.x-self.w//2, self.y -self.h//2, self.w, self.h, (int(self.f) +1) * self.w, 0,  int(self.f) * self.w, self.h )
+        
+        if self.vx != 0:
+            self.f = (self.f + .2) % self.F
             
         # noFill()    
         # ellipse(self.x, self.y,self.r*2, self.r*2)
@@ -58,9 +61,6 @@ class Mario(Creature):
         
     def update(self):
         self.gravity()
-
-        if self.vx != 0:
-            self.f = (self.f + .2) % self.F
         
         if self.keyHandler[LEFT]:
             self.vx = -5
