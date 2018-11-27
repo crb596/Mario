@@ -41,18 +41,18 @@ class Creature:
         stroke(255,0,0)
         
         if self.direction == 1:
-            image(self.img,self.x-self.w//2, self.y -self.h//2, self.w, self.h, int(self.f) * self.w, 0, (int(self.f) +1)* self.w, self.h )
+            image(self.img,self.x-self.w//2 - g.x , self.y -self.h//2, self.w, self.h, int(self.f) * self.w, 0, (int(self.f) +1)* self.w, self.h )
         elif self.direction == -1:
-            image(self.img,self.x-self.w//2, self.y -self.h//2, self.w, self.h, (int(self.f) +1) * self.w, 0,  int(self.f) * self.w, self.h )
+            image(self.img,self.x-self.w//2 - g.x, self.y -self.h//2, self.w, self.h, (int(self.f) +1) * self.w, 0,  int(self.f) * self.w, self.h )
         
         if self.vx != 0:
             self.f = (self.f + .2) % self.F
             
         # noFill()    
         # ellipse(self.x, self.y,self.r*2, self.r*2)
-        stroke(0)
-        strokeWeight(5)
-        line(self.x-self.r, self.g, self.x+self.r, self.g)
+        # stroke(0)
+        # strokeWeight(5)
+        # line(self.x-self.r, self.g, self.x+self.r, self.g)
     
 class Mario(Creature):
     def __init__(self, x, y, r, g, img, w, h, F):
@@ -80,6 +80,9 @@ class Mario(Creature):
         
         self.x += self.vx
         self.y += self.vy
+        
+        if self.x >= g.w//2:
+            g.x += self.vx
 
 class Gomba(Creature):
     def __init__(self, x, y, r, g, img, w, h, F, xL, xR):
@@ -113,14 +116,19 @@ class Platform:
     def display(self):
         # fill(130, 95, 1)
         # rect(self.x, self.y, self.w, self.h)
-        image(self.img, self.x, self.y, self.w, self.h)
+        image(self.img, self.x - g.x, self.y, self.w, self.h)
         
 class Game:
     def __init__(self, w, h, g):
+        self.x = 0
         self.w = w
         self.h = h
         self.g = g
         self.mario = Mario(50,50, 35, self.g, "mario.png", 100, 70, 11)
+        
+        self.bgImgs = []
+        for i in range(5,0,-1):
+            self.bgImgs.append(loadImage(path+"images/layer_0" + str(i) + ".png"))
         
         self.enemies = []
         for i in range(5):
@@ -129,12 +137,18 @@ class Game:
         self.platforms = []
         for i in range(3):
             self.platforms.append(Platform(250+i*300, 500-i*150, 192, 50, "platform.png"))
+        
+        for i in range(3):
+            self.platforms.append(Platform(1500+i*300, 500-i*150, 192, 50, "platform.png"))
     
     def display(self):
-        fill(0,140,0)
-        stroke(140)
-        strokeWeight(1)
-        rect(0, self.g, self.w, self.h)
+        # fill(0,140,0)
+        # stroke(140)
+        # strokeWeight(1)
+        # rect(0, self.g, self.w, self.h)
+        
+        for b in self.bgImgs:
+            image(b,0 - self.x,0)
         
         for p in self.platforms:
             p.display()
@@ -143,10 +157,9 @@ class Game:
             e.display()
             
         self.mario.display()
-
     
 
-g = Game(1024,768,600)
+g = Game(1024,720,585)
 
 def setup():
     size(g.w, g.h)
