@@ -146,17 +146,17 @@ class Game:
         
         self.platforms = []
         for i in range(3):
-            self.platforms.append(Platform(250+i*300, 500-i*150, 192, 50, "platform.png"))
+            self.platforms.append(Platform(250+i*300, 500-i*150, 200, 50, "platform.png"))
         
         for i in range(3):
-            self.platforms.append(Platform(1500+i*300, 500-i*150, 192, 50, "platform.png"))
+            self.platforms.append(Platform(1500+i*300, 500-i*150, 200, 50, "platform.png"))
     
     def display(self):
         # fill(0,140,0)
         # stroke(140)
         # strokeWeight(1)
         # rect(0, self.g, self.w, self.h)
-        
+
         cnt = 0
         x = 0
         for b in self.bgImgs:
