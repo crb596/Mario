@@ -66,7 +66,7 @@ class Mario(Creature):
             self.vx = -5
             self.direction = -1
         elif self.keyHandler[RIGHT]:
-            self.vx = 5
+            self.vx = 8
             self.direction = 1
         else:
             self.vx = 0
@@ -74,7 +74,7 @@ class Mario(Creature):
         if self.keyHandler[UP] and self.y + self.r == self.g:
             self.jumpSound.rewind()
             self.jumpSound.play()
-            self.vy = -12
+            self.vy = -15
             
         if self.x - self.r < 0:
             self.x = self.r 
@@ -168,22 +168,40 @@ class Game:
         self.bgSound = player.loadFile(path + "sounds/background.mp3")
         self.bgSound.play()
         self.bgSound.loop()
-        self.mario = Mario(50,50, 35, self.g, "mario.png", 100, 70, 11)
+        
+        self.enemies = []
+        self.platforms = []
+        inputFile = open(path+"level1.csv","r")
+
+    # self.mario = Mario(50,50, 35, self.g, "mario.png", 100, 70, 11)
         
         self.bgImgs = []
         for i in range(5,0,-1):
             self.bgImgs.append(loadImage(path+"images/layer_0" + str(i) + ".png"))
         
-        self.enemies = []
-        for i in range(5):
-            self.enemies.append(Gomba(random.randint(200, 500), 0, 35, self.g, "gomba.png", 70, 70, 5, 200, 800))
+        # self.enemies = []
+        # for i in range(5):
+        #     self.enemies.append(Gomba(random.randint(200, 500), 0, 35, self.g, "gomba.png", 70, 70, 5, 200, 800))
         
-        self.platforms = []
-        for i in range(3):
-            self.platforms.append(Platform(250+i*300, 500-i*150, 200, 50, "platform.png"))
+        # self.platforms = []
+        # for i in range(3):
+        #     self.platforms.append(Platform(250+i*300, 500-i*150, 200, 50, "platform.png"))
         
-        for i in range(3):
-            self.platforms.append(Platform(1500+i*300, 500-i*150, 200, 50, "platform.png"))
+        # for i in range(3):
+        #     self.platforms.append(Platform(1500+i*300, 500-i*150, 200, 50, "platform.png"))
+    
+    
+        for line in inputFile:
+            line = line.strip().split(",")
+            if line[0] == "mario":
+                self.mario = Mario(int(line[1]),int(line[2]), int(line[3]), int(line[4]), line[5], int(line[6]), int(line[7]), int(line[8]))
+            elif line[0] == "platform":
+                self.platforms.append(Platform(int(line[1]),int(line[2]), int(line[3]), int(line[4]), line[5]))
+            elif line[0] == "gomba":
+                self.enemies.append(Gomba(int(line[1]),int(line[2]), int(line[3]), int(line[4]), line[5], int(line[6]), int(line[7]), int(line[8]), int(line[9]), int(line[10])))
+            elif line[0] == "ground":
+                self.g = int(line[2])
+    
     
         self.stars = []
         for i in range(7):
@@ -248,8 +266,10 @@ def keyPressed():
     elif keyCode == 80:
         if g.pause:
             g.pause = False
+            g.bgSound.play()
         else:
             g.pause = True
+            g.bgSound.pause()
         g.pauseSound.rewind()
         g.pauseSound.play()
         
