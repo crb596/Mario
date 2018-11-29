@@ -61,6 +61,7 @@ class Mario(Creature):
         Creature.__init__(self,x, y, r, g, img, w, h, F)
         self.keyHandler={LEFT:False, RIGHT:False, UP:False}
         self.jumpSound = player.loadFile(path + "sounds/jump.mp3")
+        self.killSound = player.loadFile(path + "sounds/kill.mp3")
         
     def update(self):
         self.gravity()
@@ -78,7 +79,7 @@ class Mario(Creature):
         if self.keyHandler[UP] and self.y + self.r == self.g:
             self.jumpSound.rewind()
             self.jumpSound.play()
-            self.vy = -15
+            self.vy = -12
             
         if self.x - self.r < 0:
             self.x = self.r 
@@ -89,6 +90,22 @@ class Mario(Creature):
         if self.x >= g.w//2:
             g.x += self.vx
 
+        for e in g.enemies:
+            if self.distance(e) <= self.r + e.r:
+                if self.vy > 0:
+                    g.enemies.remove(e)
+                    self.killSound.rewind()
+                    self.killSound.play()
+                    self.vy = -8
+                else:
+                    
+                    g.bgSound.pause()
+                    g.__init__(1280,720,585)
+                
+    def distance(self, target):
+        return ((self.x - target.x)**2 + (self.y - target.y)**2)**0.5
+        
+        
 class Gomba(Creature):
     def __init__(self, x, y, r, g, img, w, h, F, xL, xR):
         Creature.__init__(self,x, y, r, g, img, w, h, F)
