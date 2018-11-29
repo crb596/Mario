@@ -50,12 +50,6 @@ class Creature:
         if self.vx != 0:
             self.f = (self.f + .2) % self.F
             
-        # noFill()    
-        # ellipse(self.x, self.y,self.r*2, self.r*2)
-        # stroke(0)
-        # strokeWeight(5)
-        # line(self.x-self.r, self.g, self.x+self.r, self.g)
-    
 class Mario(Creature):
     def __init__(self, x, y, r, g, img, w, h, F):
         Creature.__init__(self,x, y, r, g, img, w, h, F)
@@ -74,7 +68,6 @@ class Mario(Creature):
             self.direction = 1
         else:
             self.vx = 0
-            # self.direction = 0
             
         if self.keyHandler[UP] and self.y + self.r == self.g:
             self.jumpSound.rewind()
@@ -94,11 +87,11 @@ class Mario(Creature):
             if self.distance(e) <= self.r + e.r:
                 if self.vy > 0:
                     g.enemies.remove(e)
+                    del e
                     self.killSound.rewind()
                     self.killSound.play()
                     self.vy = -8
                 else:
-                    
                     g.bgSound.pause()
                     g.__init__(1280,720,585)
                 
@@ -125,8 +118,7 @@ class Gomba(Creature):
         
         self.x += self.vx
         self.y += self.vy
-        
-
+    
 class Platform:
     def __init__(self,x,y, w, h, img):
         self.x = x
@@ -136,8 +128,6 @@ class Platform:
         self.img = loadImage(path+"images/"+img)
     
     def display(self):
-        # fill(130, 95, 1)
-        # rect(self.x, self.y, self.w, self.h)
         image(self.img, self.x - g.x, self.y, self.w, self.h)
         
 class Game:
@@ -169,11 +159,6 @@ class Game:
             self.platforms.append(Platform(1500+i*300, 500-i*150, 200, 50, "platform.png"))
     
     def display(self):
-        # fill(0,140,0)
-        # stroke(140)
-        # strokeWeight(1)
-        # rect(0, self.g, self.w, self.h)
-
         cnt = 0
         x = 0
         for b in self.bgImgs:
