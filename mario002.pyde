@@ -56,6 +56,8 @@ class Mario(Creature):
         self.keyHandler={LEFT:False, RIGHT:False, UP:False}
         self.jumpSound = player.loadFile(path + "sounds/jump.mp3")
         self.killSound = player.loadFile(path + "sounds/kill.mp3")
+        self.starSound = player.loadFile(path + "sounds/coin.mp3")
+        self.starCnt = 0
         
     def update(self):
         self.gravity()
@@ -82,6 +84,14 @@ class Mario(Creature):
         
         if self.x >= g.w//2:
             g.x += self.vx
+
+        for s in g.stars:
+            if self.distance(s) <= self.r + s.r:
+                g.stars.remove(s)
+                self.starSound.rewind()
+                self.starSound.play()
+                self.starCnt += 1
+                
 
         for e in g.enemies:
             if self.distance(e) <= self.r + e.r:
@@ -129,13 +139,30 @@ class Platform:
     
     def display(self):
         image(self.img, self.x - g.x, self.y, self.w, self.h)
+
+class Star(Creature):
+    def __init__(self, x, y, r, g, img, w, h, F, theta, r1):
+        Creature.__init__(self,x, y, r, g, img, w, h, F)
+        self.theta = theta
+        self.cx = x
+        self.cy = y
+        self.r1 = r1
+    
+    def update(self):
+        self.f = (self.f + .2) % self.F
         
+        self.theta += 0.01
+        self.x = self.cx + self.r1*cos(self.theta)
+        self.y = self.cy + self.r1*sin(self.theta)
+        
+                                                         
 class Game:
     def __init__(self, w, h, g):
         self.x = 0
         self.w = w
         self.h = h
         self.g = g
+        self.time = 0
         self.pause = False
         self.pauseSound = player.loadFile(path + "sounds/pause.mp3")
         self.bgSound = player.loadFile(path + "sounds/background.mp3")
@@ -158,7 +185,14 @@ class Game:
         for i in range(3):
             self.platforms.append(Platform(1500+i*300, 500-i*150, 200, 50, "platform.png"))
     
+        self.stars = []
+        for i in range(7):
+            self.stars.append(Star(300,300,20, self.g, "star.png", 40,40,6, i*0.9, 100))
+        
+        self.stars.append(Star(600,300,20, self.g, "star.png", 40,40,6, 0, 0))
+        
     def display(self):
+        self.time += 1
         cnt = 0
         x = 0
         for b in self.bgImgs:
@@ -173,7 +207,7 @@ class Game:
             cnt += 1
             
             image(b,0,0, self.w - x%self.w, self.h, x%self.w, 0, self.w, self.h)
-            image(b,self.w -x%self.w, 0, x%self.w, self.h, 0, 0, x%self.w, self.h  )
+            image(b,self.w -x%self.w, 0, x%self.w, self.h, 0, 0, x%self.w, self.h)
         
         for p in self.platforms:
             p.display()
@@ -181,7 +215,16 @@ class Game:
         for e in self.enemies:
             e.display()
             
+        for s in self.stars:
+            s.display()
+            
         self.mario.display()
+        
+        
+        textSize(30)
+        text(self.mario.starCnt, self.w - 50, 50)
+        text(self.time//60, self.w - 50, 100)
+        
     
 
 g = Game(1280,720,585)
